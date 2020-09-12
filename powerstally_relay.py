@@ -268,12 +268,12 @@ def saveGoodIP(addr):
 def setLEDfromSceneName():
   global currentSceneName, LEDstate
   if currentSceneName.find(triggerChar) > -1:
-    GPIO.output(tallyLightGPIO, 1)
+    GPIO.output(tallyLightGPIO, 0)
     logging.debug("LED ON")
     print("LED ON")
     LEDstate = 1
   else:
-    GPIO.output(tallyLightGPIO, 0)
+    GPIO.output(tallyLightGPIO, 1)
     logging.debug("LED OFF")
     print("LED OFF")
     LEDstate = 0
@@ -353,7 +353,7 @@ try:
 
 # CONNECTION FAILED OR OBS STUDIO NOT FOUND
         try:
-          GPIO.output(tallyLightGPIO, 0)
+          GPIO.output(tallyLightGPIO, 1)
           ws.disconnect()
         except:
           pass
@@ -363,7 +363,7 @@ try:
 
 # SCRIPT STOPPED BY CTRL-C
 except KeyboardInterrupt: 
-    GPIO.output(tallyLightGPIO, 0)
+    GPIO.output(tallyLightGPIO, 1)
     try:
       ws.disconnect()
     except:
@@ -372,5 +372,5 @@ except KeyboardInterrupt:
 # CLEANUP
 logging.debug("SHUTTING DOWN!")
 print("SHUTTING DOWN!")
-GPIO.output(tallyLightGPIO, 0)
+GPIO.output(tallyLightGPIO, 1)
 GPIO.cleanup()
