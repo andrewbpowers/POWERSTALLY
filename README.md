@@ -1,6 +1,6 @@
 # POWERSTALLY - Tally Light for OBS Studio (fully Plug-and-Play)
-## by Andrew B. Powers 
-## www.andrewbpowers.com
+### by Andrew B. Powers 
+### www.andrewbpowers.com
 
 ## Use
 
