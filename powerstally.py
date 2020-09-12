@@ -1,29 +1,26 @@
-#!/usr/bin/env python
+# !/usr/bin/env python
 # -*- coding: utf-8 -*-
 
 # powerstally.py for POWERSTALLY
 # Written by Andrew B. Powers
 # www.andrewbpowers.com
+# https://github.com/andrewbpowers/POWERSTALLY
 
-#Changelog
-#0.8    2020-02-27
-#   First beta version for friends of the house ;-)
-#0.9    2020-03-11
-#   Alpha version for public - Use at your own risk :-)
-#1.2	2020-08-14
-#	If no communication has occurred in the past 30 seconds, pings to make sure connection still exists
-#	If no connection, resets WiFi
-#1.3    2020-08-26
-#   Code cleanup, easier to read
-#   Current scene name request timeout after 2 seconds
-#   Fixed logging to wrong date file issue
-#   If GPIO pins are already configured, user is given a chance to stop script
+# Changelog
+# 0.8    2020-02-27
+#    First beta version for friends of the house ;-)
+# 0.9    2020-03-11
+#    Alpha version for public - Use at your own risk :-)
+# 1.2	2020-08-14
+# 	If no communication has occurred in the past 30 seconds, pings to make sure connection still exists
+# 	If no connection, resets WiFi
+# 1.3    2020-08-26
+#    Code cleanup, easier to read
+#    Current scene name request timeout after 2 seconds
+#    Fixed logging to wrong date file issue
+#    If GPIO pins are already configured, user is given a chance to stop script
 
-
-#ToDo
-#	Fade to black transition will turn on Tally Light if a scene with the trigger char is loaded in preview
-
-#make sure to pip3 install multiping socket thread signal
+# Make sure to pip3 install multiping socket thread signal
 
 import sys
 import time
@@ -38,62 +35,63 @@ import signal
 
 todaysDate = str(time.strftime("%Y-%m-%d"))
 
-#################### Setup ##################
+#####################################################################################
+######################################## SETUP ######################################
+#####################################################################################
 
-  #Comment out all but one of the following logFileNames.  The first will put all logs into a single file.  The second will create a new logfile for each day.
-#logFileName = '/home/pi/tally.log'
-logFileName = '/home/pi/tally_'+ todaysDate +'.log'
+# Comment out all but one of the following logFileNames.  The first will put all logs into a single file.  The second will create a new logfile for each day.
+#logFileName = '/home/pi/powerstally.log'
+logFileName = '/home/pi/powerstally_'+ todaysDate +'.log'
 
-  #Set the GPIO Pins
+# Set the GPIO Pins
 tallyLightGPIO = 25
 statusLightGPIO = 4
 
-  #Set the trigger character
+# Set the trigger character
 triggerChar = '+'
 
-  #Set the number of seconds of no ping response before resetting
-resetSeconds = 120 #Minimum 40 seconds
+# Set the number of seconds of no ping response before resetting
+# Minimum 40 seconds
+resetSeconds = 120 # Minimum 40 seconds
 beginPingSeconds = 1
 
-  #Set the websocket port (Should be 4444) and password (set in OBS Studio)
+# Set the websocket port (Should be 4444) and password (set in OBS Studio)
 port = 4444
-password = "328149"
+password = "123456"
 
-
-
-#################### Functions ##################
+#####################################################################################
+###################################### FUNCTIONS ####################################
+#####################################################################################
 
 def setLogger(fname):
-#https://stackoverflow.com/questions/12158048/changing-loggings-basicconfig-which-is-already-set
   for handler in logging.root.handlers[:]:
     logging.root.removeHandler(handler)
   logging.basicConfig(filename=logFileName,level=logging.DEBUG, format='%(asctime)s %(name)-12s %(levelname)-8s %(message)s',  datefmt='%y-%m-%d %H:%M:%S %Z')
   print("Logging to: " + logFileName)
 
-  #Initialize logging
+# Initialize logging
 setLogger(logFileName)
-logging.debug('Tally Light BOOTED')
+logging.debug('Yeah! POWERSTALLY is BOOTED!')
 
-  #Not sure what this does...
 sys.path.append('../')
 from obswebsocket import obsws, events, requests  # noqa: E402
 
-  #Try load last good IP address
+# Try load last good IP address
 lastKnownOBSStudioIP = ""
 try:
-    logging.debug('Opening obsAddr.log')
-    ipAddressHistory = open("obsAddr.log","r")
+    logging.debug('Opening obsaddress.log')
+    ipAddressHistory = open("obsaddress.log","r")
     logging.debug('Reading last known OBS Studio IP Address')
     lastKnownOBSStudioIP = ipAddressHistory.readline()
-    logging.debug('Last known OBS Studio IP: ' + lastKnownOBSStudioIP)
+    logging.debug('Last known OBS Studio IP address: ' + lastKnownOBSStudioIP)
     ipAddressHistory.close()
 except:
-	logging.debug('Could not load last good IP')
+	logging.debug('COULD NOT LOAD last good IP address from OBS Studio')
 
-#Keep track of last communication time
+# Keep track of last communication time
 lastCommunicationTime = time.time()
 
-#2hz Long Blink
+# 2hz Long Blink
 def delayBlinkLED(count):
     count *= 2
     while count:
@@ -103,7 +101,7 @@ def delayBlinkLED(count):
       time.sleep(0.25)
       count -= 1
 
-#4hz Fast Blink
+# 4hz Fast Blink
 nextBlink = 0
 def fastBlink(count):
   global nextBlink
@@ -117,22 +115,22 @@ def fastBlink(count):
         time.sleep(0.23)
       count -= 1
 
-#Shutdown and restart WiFi
+# SHUTTING DOWN AND RESTART WLAN
 def resetWiFi():
-    logging.debug("Shutting down WiFi")
-    print("Shutting down WiFi")
+    logging.debug("SHUTTING DOWN WLAN!")
+    print("SHUTTING DOWN WLAN!")
     cmd = 'ifconfig wlan0 down'
     os.system(cmd)
-    print("Bringing up WiFi in 5")
+    print("Bringing up WLAN in 5")
     delayBlinkLED(5)
     print("Now!")
-    logging.debug("Bringing up WiFi")
+    logging.debug("Bringing up WLAN")
     cmd = 'ifconfig wlan0 up'
     os.system(cmd)
     delayBlinkLED(5)
     
 
-#Returns tuple of available IP addresses
+# Returns tuple of available IP addresses
 def scan_all_ip():
   ipRange = []
   logging.debug("Pinging all IP addresses")
@@ -141,19 +139,20 @@ def scan_all_ip():
     ipRange.append("192.168.1."+str(i))
     ipRange.append("192.168.2."+str(i))
     ipRange.append("192.168.178."+str(i))
+    ipRange.append("10.0.0."+str(i))
   mp = MultiPing(ipRange)
   try:
     mp.send()
     responses, no_responses = mp.receive(2)
   except:
-    logging.debug("Failure to ping addresses")
-    print("Failure to ping addresses")
+    logging.debug("FAILURE! UNABLE to ping IP address!")
+    print("FAILURE! UNABLE to ping IP address")
     return ""
   for addr, rtt in responses.items():
   	logging.debug ("%s responded in %f seconds" % (addr, rtt))
   return responses
 
-#Ping a target IP
+# Ping a target IP address
 def pingHost(ipToPing):
   p = []
   p.append(ipToPing)
@@ -162,39 +161,39 @@ def pingHost(ipToPing):
     mp.send()
     responses, no_responses = mp.receive(2)
   except:
-    logging.debug("Ping " + ipToPing + " Failure - Unable To Ping")
-    print("Ping " + ipToPing + " Failure - Unable To Ping")
+    logging.debug("Ping " + ipToPing + " FAILURE! UNABLE to ping IP address!")
+    print("Ping " + ipToPing + " FAILURE! UNABLE to ping IP address!")
     return False
   if ipToPing in responses:
-    logging.debug("Ping " + ipToPing + " Successful")
-    print("Ping " + ipToPing + " Successful")
+    logging.debug("Ping " + ipToPing + " SUCCESSFUL!")
+    print("Ping " + ipToPing + " SUCCESSFUL!")
     return True
-    logging.debug("Ping " + ipToPing + ": No Response")
-    print("Ping " + ipToPing + ": No Response")
+    logging.debug("Ping " + ipToPing + ": NO RESPONSE!")
+    print("Ping " + ipToPing + ": NO RESPONSE!")
   return False
 	
-#Returns IP of OBS Studio (or "" if OBS Studio not found)
+# Returns IP address of OBS Studio (or "" if OBS Studio not found)
 def find_open_socket():
   global lastCommunicationTime
-  prefferedIP = ""
+  preferredIP = ""
   responses = scan_all_ip()	  
   if responses != "":
     for addr, rtt in responses.items():
       if str(addr) == lastKnownOBSStudioIP:
-        prefferedIP = addr
-        print("Preffered IP loaded: " + lastKnownOBSStudioIP + " " + str(addr))
+        preferredIP = addr
+        print("Preferred IP address loaded: " + lastKnownOBSStudioIP + " " + str(addr))
     for addr, rtt in responses.items():
       if connected == False:
-        if prefferedIP != "":
-          print("Attempting to connect to " + prefferedIP + "(last known IP of OBS Studio)")
-          logging.debug ("Attempting to connect " + prefferedIP + "(last known IP of OBS Studio)")
+        if preferredIP != "":
+          print("Attempting to connect to " + preferredIP + "(last known IP address of OBS Studio)")
+          logging.debug ("Attempting to connect " + preferredIP + "(last known IP address of OBS Studio)")
           sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-          result = sock.connect_ex((prefferedIP,port))
+          result = sock.connect_ex((preferredIP,port))
           sock.close
           if result == 0:
-            logging.debug("OBS Studio Websocket Found!")
-            print("OBS Studio Websocket Found!")
-            return prefferedIP
+            logging.debug("Yeah! OBS Studio Websocket found!")
+            print("Yeah! OBS Studio Websocket found!")
+            return preferredIP
         sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         print("Attempting to connect to " + addr)
         logging.debug ("Attempting to connect to " + addr)
@@ -202,16 +201,16 @@ def find_open_socket():
         result = sock.connect_ex((addr,port))
         sock.close
         if result == 0:
-          logging.debug("OBS Studio Websocket Found!")
-          print("OBS Studio Websocket Found!")
+          logging.debug("OBS Studio Websocket found!")
+          print("OBS Studio Websocket found!")
           lastCommunicationTime = time.time()
           return addr
   return ""
 
 def signal_handler(signum, frame):
-    raise Exception("Timed out!")
+    raise Exception("TIMED OUT!")
 
-#Asks OBS Studio for current scene name, times out after 2 seconds
+# Asks OBS Studio for current scene name, times out after 2 seconds
 def requestCurrentSceneName():
   global currentSceneName, lastCommunicationTime 
   message = ""
@@ -225,12 +224,12 @@ def requestCurrentSceneName():
     logging.debug("Current scene name: " + currentSceneName)
     lastCommunicationTime = time.time()
   except:
-    print("No response!")
-    logging.debug("No response to current scene name request!")
+    print("NO RESPONSE!")
+    logging.debug("NO RESPONSE to current scene name request!")
   signal.signal(signal.SIGALRM, signal.SIG_IGN)
   signal.alarm(0)
 
-#Function called if any Websocket Message rec'd
+#F unction called if any Websocket Message rec'd
 def on_event(message):
   global connected, lastCommunicationTime
   logging.debug(u"Got message: {}".format(message))
@@ -240,7 +239,7 @@ def on_event(message):
   else:
     lastCommunicationTime = time.time()
 
-#Function called if scene changed
+# Function called if scene changed
 def on_switch(message):
   global LEDstate, lastCommunicationTime, currentSceneName
   logging.debug(u"Scene Changed To {}".format(message.getSceneName()))
@@ -248,24 +247,24 @@ def on_switch(message):
   currentSceneName = format(message.getSceneName())
   setLEDfromSceneName()
 
-#Parses scene name from websocket message
+# Parses scene name from websocket message
 def getSceneName(message):
     sn = str(message)[str(message).find("name"):]
     sn = sn[:sn.find(",")]
     return sn
 
-#Saves IP address to file for next time
+# Saves IP address to file for next time
 def saveGoodIP(addr):
   try:
-    ipAddressHistory = open("obsAddr.log","w+")
+    ipAddressHistory = open("obsaddress.log","w+")
     ipAddressHistory.write(addr)
     ipAddressHistory.close()
-    logging.debug("Saved new OBS Studio IP: " + str(addr))
+    logging.debug("Saved OBS Studio new IP address: " + str(addr))
   except:
     pass
   lastKnownOBSStudioIP = str(addr)
 
-#Sets the LED status from the scene name
+# Sets the LED status from the scene name
 def setLEDfromSceneName():
   global currentSceneName, LEDstate
   if currentSceneName.find(triggerChar) > -1:
@@ -279,18 +278,21 @@ def setLEDfromSceneName():
     print("LED OFF")
     LEDstate = 0
 
-#################### Main Loop ##################
-#Setup GPIO pins
+#####################################################################################
+###################################### MAIN LOOP ####################################
+#####################################################################################
+
+# SETUP THE GPIO PINS
 
 GPIO.setmode(GPIO.BCM)
 if GPIO.gpio_function(statusLightGPIO) == 0:
   print('!!!!! WARNING !!!!! WARNING !!! WARNING !!! WARNING !!! WARNING !!!')
-  print('GPIO pins are already in use!')
-  print('Please press CTRL-C immediately to stop script!')
+  print('GPIO pins are ALREADY in USE!')
+  print('Please PRESS CTRL-C IMMEDIATELY to STOP the script!')
   time.sleep(1)
   print('You have 8 seconds to comply!')
   time.sleep(2)
-  print('Yes, baby... daddy is home  ;-)')
+  print('Yes, baby... daddy is home ;-)')
   time.sleep(5)
 GPIO.setup(statusLightGPIO, GPIO.OUT)
 GPIO.output(statusLightGPIO, GPIO.HIGH)
@@ -301,8 +303,10 @@ LEDstate = 0
 currentSceneName = ""
 try:
     while 1:
-#Begin attempting to find and connect to OBS Studio
-        addr = find_open_socket()	#Get the address of OBS Studio
+	
+# START ATTEMPTING TO FIND AND CONNECT TO OBS STUDIO
+# GET THE IP ADDRESS OBS Studio
+        addr = find_open_socket()
         if addr != "":	#If OBS Studio found
           ws = obsws(addr, port, password)
           ws.register(on_event)
@@ -314,18 +318,19 @@ try:
             connected = True
             saveGoodIP(addr)
             if todaysDate != str(time.strftime("%Y-%m-%d")):
-              print("Wrong logfile date!! Changing from " + todaysDate + " to " + str(time.strftime("%Y-%m-%d")))
-              logging.debug("Wrong logfile date!! Changing from " + todaysDate + " to " + str(time.strftime("%Y-%m-%d")))
-              if logFileName != '/home/pi/tally.log':
+              print("WRONG logfile date!! Changing from " + todaysDate + " to " + str(time.strftime("%Y-%m-%d")))
+              logging.debug("WRONG logfile date! Changing from " + todaysDate + " to " + str(time.strftime("%Y-%m-%d")))
+              if logFileName != '/home/pi/powerstally.log':
                 todaysDate = str(time.strftime("%Y-%m-%d"))
-                logFileName = '/home/pi/tally_'+ todaysDate +'.log'
+                logFileName = '/home/pi/powerstally_'+ todaysDate +'.log'
                 setLogger(logFileName)
-                logging.debug("WAS logging to wrong logfile date!! Changed from " + todaysDate + " to " + str(time.strftime("%Y-%m-%d")))
+                logging.debug("WAS logging to the wrong logfile date! Changed from " + todaysDate + " to " + str(time.strftime("%Y-%m-%d")))
           except:
             logging.debug("Connection Refused")
             print("Connection Refused")
-#Connected!  
-        while connected:	#blink status LED once for connected, twice for connected and Tally Light ON
+
+# CONNECTED
+        while connected:	#blink status LED once for connected, twice for connected and POWERSTALLY is ON
                 if lastCommunicationTime + beginPingSeconds < time.time():
                   logging.debug("Haven't heard from OBS in " + str(time.time()-lastCommunicationTime) + " seconds, Pinging!")
                   print("Haven't heard from OBS in " + str(time.time()-lastCommunicationTime) + " seconds, Pinging!")   
@@ -345,17 +350,18 @@ try:
                   fastBlink(2)
                 else:
                   fastBlink(1)
-#Connection failed (or OBS studio not found!)
+
+# CONNECTION FAILED OR OBS STUDIO NOT FOUND
         try:
           GPIO.output(tallyLightGPIO, 0)
           ws.disconnect()
         except:
           pass
-        logging.debug("Could not find OBS Studio - Waiting 2 seconds and re-attempting")
-        print("Could not find OBS Studio - Waiting 2 seconds and re-attempting")
+        logging.debug("COULD NOT find OBS Studio! Waiting 2 seconds and re-attempting...")
+        print("COULD NOT find OBS Studio! Waiting 2 seconds and re-attempting...")
         time.sleep(2)
 
-#Script stopped by ctl-C
+# SCRIPT STOPPED BY CTRL-C
 except KeyboardInterrupt: 
     GPIO.output(tallyLightGPIO, 0)
     try:
@@ -363,8 +369,8 @@ except KeyboardInterrupt:
     except:
       pass
 
-#Cleanup
-logging.debug("Shutting Down")
-print("Shutting Down")
+# CLEANUP
+logging.debug("SHUTTING DOWN!")
+print("SHUTTING DOWN!")
 GPIO.output(tallyLightGPIO, 0)
 GPIO.cleanup()
