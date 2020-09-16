@@ -32,27 +32,27 @@ todaysDate = str(time.strftime("%Y-%m-%d"))
 ######################################## SETUP ######################################
 #####################################################################################
 
-# THIS LINE WILL PUT ALL LOGS INTO ONE SINGLE FILE
-#logFileName = '/home/pi/powerstally.log'
+# *** *** *** *** *** WEBSOCKET PORT (USALLY 4444) AND PASSWORD (ALSO SET IN THE OBS WEBSOCKET PLUG-IN) *** *** *** *** ***
+port = 4444
+password = "123456"
 
-# THIS LINE WILL CREATE A NEW LOGFILE FOR EACH DAY
-logFileName = '/home/pi/powerstally_'+ todaysDate +'.log'
+# SET THE TRIGGER CHARACTER
+triggerChar = '+'
 
 # SET THE GPIO PINS
 tallyLightGPIO = 25
 statusLightGPIO = 4
-
-# SET THE TRIGGER CHARACTER
-triggerChar = '+'
 
 # NUMBER OF SECONDS OF NO PING RESPONSE BEFORE RESETTING
 # MIN. 40 SECONDS
 resetSeconds = 120
 beginPingSeconds = 1
 
-# WEBSOCKET PORT (USALLY 4444) AND PASSWORD (ALSO SET IN THE OBS WEBSOCKET PLUG-IN)
-port = 4444
-password = "123456"
+# THIS LINE WILL PUT ALL LOGS INTO ONE SINGLE FILE
+#logFileName = '/home/pi/powerstally.log'
+
+# THIS LINE WILL CREATE A NEW LOGFILE FOR EACH DAY
+logFileName = '/home/pi/powerstally_'+ todaysDate +'.log'
 
 #####################################################################################
 ###################################### FUNCTIONS ####################################
