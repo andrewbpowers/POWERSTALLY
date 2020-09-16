@@ -4,6 +4,7 @@
 # powerstally.py for POWERSTALLY
 # Written by Andrew B. Powers
 # www.andrewbpowers.com
+# www.andrewbpowers.com/stories/dasdsadsadasdasdsada
 # https://github.com/andrewbpowers/POWERSTALLY
 
 # Changelog
@@ -11,16 +12,8 @@
 #    First beta version for friends of the house ;-)
 # 0.9    2020-03-11
 #    Alpha version for public - Use at your own risk :-)
-# 1.2	2020-08-14
-# 	If no communication has occurred in the past 30 seconds, pings to make sure connection still exists
-# 	If no connection, resets WiFi
-# 1.3    2020-08-26
-#    Code cleanup, easier to read
-#    Current scene name request timeout after 2 seconds
-#    Fixed logging to wrong date file issue
-#    If GPIO pins are already configured, user is given a chance to stop script
-
-# Make sure to pip3 install multiping socket thread signal
+# 1.0	2020-04-02
+#    This version can be use for LED Tally Light or a high voltage Tally Light via relay board. Use what you like and prefer.
 
 import sys
 import time
@@ -39,23 +32,25 @@ todaysDate = str(time.strftime("%Y-%m-%d"))
 ######################################## SETUP ######################################
 #####################################################################################
 
-# Comment out all but one of the following logFileNames.  The first will put all logs into a single file.  The second will create a new logfile for each day.
+# THIS LINE WILL PUT ALL LOGS INTO ONE SINGLE FILE
 #logFileName = '/home/pi/powerstally.log'
+
+# THIS LINE WILL CREATE A NEW LOGFILE FOR EACH DAY
 logFileName = '/home/pi/powerstally_'+ todaysDate +'.log'
 
-# Set the GPIO Pins
+# SET THE GPIO PINS
 tallyLightGPIO = 25
 statusLightGPIO = 4
 
-# Set the trigger character
+# SET THE TRIGGER CHARACTER
 triggerChar = '+'
 
-# Set the number of seconds of no ping response before resetting
-# Minimum 40 seconds
-resetSeconds = 120 # Minimum 40 seconds
+# NUMBER OF SECONDS OF NO PING RESPONSE BEFORE RESETTING
+# MIN. 40 SECONDS
+resetSeconds = 120
 beginPingSeconds = 1
 
-# Set the websocket port (Should be 4444) and password (set in OBS Studio)
+# WEBSOCKET PORT (USALLY 4444) AND PASSWORD (ALSO SET IN THE OBS WEBSOCKET PLUG-IN)
 port = 4444
 password = "123456"
 
@@ -69,14 +64,14 @@ def setLogger(fname):
   logging.basicConfig(filename=logFileName,level=logging.DEBUG, format='%(asctime)s %(name)-12s %(levelname)-8s %(message)s',  datefmt='%y-%m-%d %H:%M:%S %Z')
   print("Logging to: " + logFileName)
 
-# Initialize logging
+# INITIALIZE LOGGING
 setLogger(logFileName)
 logging.debug('Yeah! POWERSTALLY is BOOTED!')
 
 sys.path.append('../')
 from obswebsocket import obsws, events, requests  # noqa: E402
 
-# Try load last good IP address
+# TRY TO LOAD LAST GOOD IP ADDRESS FROM THE PC WITH OBS STUDIO
 lastKnownOBSStudioIP = ""
 try:
     logging.debug('Opening obsaddress.log')
@@ -88,10 +83,10 @@ try:
 except:
 	logging.debug('COULD NOT LOAD last good IP address from OBS Studio')
 
-# Keep track of last communication time
+# KEEP TRACK OF LAST COMMUNICATION TIME
 lastCommunicationTime = time.time()
 
-# 2hz Long Blink
+# 2HZ SLOW BLINKING (INACTIVE STREAM/NOT RECORDING BUT CONNECTED TO OBS STUDIO)
 def delayBlinkLED(count):
     count *= 2
     while count:
@@ -101,7 +96,7 @@ def delayBlinkLED(count):
       time.sleep(0.25)
       count -= 1
 
-# 4hz Fast Blink
+# 4HZ FAST BLINKING (ACTIVE SCENE WITH IN THE NAME)
 nextBlink = 0
 def fastBlink(count):
   global nextBlink
@@ -129,8 +124,7 @@ def resetWiFi():
     os.system(cmd)
     delayBlinkLED(5)
     
-
-# Returns tuple of available IP addresses
+# RETURNS TUPLE OF AVAILABLE IP ADDRESSES
 def scan_all_ip():
   ipRange = []
   logging.debug("Pinging all IP addresses")
@@ -152,7 +146,7 @@ def scan_all_ip():
   	logging.debug ("%s responded in %f seconds" % (addr, rtt))
   return responses
 
-# Ping a target IP address
+# PING THE TARGET IP ADDRESS
 def pingHost(ipToPing):
   p = []
   p.append(ipToPing)
@@ -172,7 +166,8 @@ def pingHost(ipToPing):
     print("Ping " + ipToPing + ": NO RESPONSE!")
   return False
 	
-# Returns IP address of OBS Studio (or "" if OBS Studio not found)
+# RETURNS IP ADDRESS OF THE PC WITH OBS STUDIO
+# OR "" IF A PC WITH OBS STUDIO IS NOT FOUND
 def find_open_socket():
   global lastCommunicationTime
   preferredIP = ""
@@ -210,7 +205,8 @@ def find_open_socket():
 def signal_handler(signum, frame):
     raise Exception("TIMED OUT!")
 
-# Asks OBS Studio for current scene name, times out after 2 seconds
+# ASK OBS STUDIO VIA OBS WEBSOCKET FOR CURRENT SCENE NAME
+# TIMES OUT AFTER TWO SECONDS
 def requestCurrentSceneName():
   global currentSceneName, lastCommunicationTime 
   message = ""
@@ -229,7 +225,7 @@ def requestCurrentSceneName():
   signal.signal(signal.SIGALRM, signal.SIG_IGN)
   signal.alarm(0)
 
-#F unction called if any Websocket Message rec'd
+# FUNCTION CALLED IF ANY OBS WEBSOCKET MESSAGE RECEIVED.
 def on_event(message):
   global connected, lastCommunicationTime
   logging.debug(u"Got message: {}".format(message))
@@ -239,7 +235,7 @@ def on_event(message):
   else:
     lastCommunicationTime = time.time()
 
-# Function called if scene changed
+# FUNCTION CALLED IF SCENE CHANGED
 def on_switch(message):
   global LEDstate, lastCommunicationTime, currentSceneName
   logging.debug(u"Scene Changed To {}".format(message.getSceneName()))
@@ -247,13 +243,13 @@ def on_switch(message):
   currentSceneName = format(message.getSceneName())
   setLEDfromSceneName()
 
-# Parses scene name from websocket message
+# PARSES SCENE NAME FROM OBS WEBSOCKET MESSAGE
 def getSceneName(message):
     sn = str(message)[str(message).find("name"):]
     sn = sn[:sn.find(",")]
     return sn
 
-# Saves IP address to file for next time
+# SAVING IP ADDRESS TO FILE FOR THE NEXT SESSION
 def saveGoodIP(addr):
   try:
     ipAddressHistory = open("obsaddress.log","w+")
@@ -264,35 +260,49 @@ def saveGoodIP(addr):
     pass
   lastKnownOBSStudioIP = str(addr)
 
-# Sets the LED status from the scene name
+# SETS THE STATUS FOR THE TALLY LIGHT/"ON AIR"/"RECODING"-SIGN FROM THE SCENE NAME
+# RELAY BOARD VERSION - LOW ACTIVE
 def setLEDfromSceneName():
   global currentSceneName, LEDstate
   if currentSceneName.find(triggerChar) > -1:
-    GPIO.output(tallyLightGPIO, 0)
-    logging.debug("LED ON")
-    print("LED ON")
+    GPIO.output(tallyLightGPIO, 1)
+    logging.debug("RELAY ON")
+    print("RELAY ON")
     LEDstate = 1
   else:
-    GPIO.output(tallyLightGPIO, 1)
-    logging.debug("LED OFF")
-    print("LED OFF")
+    GPIO.output(tallyLightGPIO, 0)
+    logging.debug("RELAY OFF")
+    print("RELAY OFF")
     LEDstate = 0
+	
+# LED VERSION - HIGH ACTIVE
+#def setLEDfromSceneName():
+#  global currentSceneName, LEDstate
+#  if currentSceneName.find(triggerChar) > -1:
+#    GPIO.output(tallyLightGPIO, 0)
+#    logging.debug("LED ON")
+#    print("LED ON")
+#    LEDstate = 1
+#  else:
+#    GPIO.output(tallyLightGPIO, 1)
+#    logging.debug("LED OFF")
+#    print("LED OFF")
+#    LEDstate = 0
 
 #####################################################################################
 ###################################### MAIN LOOP ####################################
 #####################################################################################
 
 # SETUP THE GPIO PINS
-
 GPIO.setmode(GPIO.BCM)
 if GPIO.gpio_function(statusLightGPIO) == 0:
-  print('!!!!! WARNING !!!!! WARNING !!! WARNING !!! WARNING !!! WARNING !!!')
+  print('!!! WARNING *** WARNING *** WARNING *** WARNING *** WARNING !!!')
   print('GPIO pins are ALREADY in USE!')
   print('Please PRESS CTRL-C IMMEDIATELY to STOP the script!')
   time.sleep(1)
   print('You have 8 seconds to comply!')
   time.sleep(2)
-  print('Yes, baby... daddy is home ;-)')
+  print('Yes... daddy is in the house! ;-)')
   time.sleep(5)
 GPIO.setup(statusLightGPIO, GPIO.OUT)
 GPIO.output(statusLightGPIO, GPIO.HIGH)
@@ -330,7 +340,8 @@ try:
             print("Connection Refused")
 
 # CONNECTED
-        while connected:	#blink status LED once for connected, twice for connected and POWERSTALLY is ON
+        while connected:	
+# BLINK STATUS LED - ONCE FOR CONNECTED, TWICE FOR CONNECTED AND TALLY LIGHT/"ON AIR"/"RECORDING"-SIGN IS ON
                 if lastCommunicationTime + beginPingSeconds < time.time():
                   logging.debug("Haven't heard from OBS in " + str(time.time()-lastCommunicationTime) + " seconds, Pinging!")
                   print("Haven't heard from OBS in " + str(time.time()-lastCommunicationTime) + " seconds, Pinging!")   
@@ -370,7 +381,7 @@ except KeyboardInterrupt:
       pass
 
 # CLEANUP
-logging.debug("SHUTTING DOWN!")
-print("SHUTTING DOWN!")
+logging.debug("SHUTTING DOWN! - Daddy has left the building...")
+print("SHUTTING DOWN! - Daddy has left the building...")
 GPIO.output(tallyLightGPIO, 1)
 GPIO.cleanup()
