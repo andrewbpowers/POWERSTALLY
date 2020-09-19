@@ -4,8 +4,8 @@
 # powerstally.py for POWERSTALLY
 # Written by Andrew B. Powers
 # www.andrewbpowers.com
-# www.andrewbpowers.com/stories/dasdsadsadasdasdsada
-# https://github.com/andrewbpowers/POWERSTALLY
+# www.andrewbpowers.com/stories/2020/9/11/powerstally
+# github.com/andrewbpowers/POWERSTALLY
 
 # Changelog
 # 0.8    2020-02-27
@@ -32,7 +32,7 @@ todaysDate = str(time.strftime("%Y-%m-%d"))
 ######################################## SETUP ######################################
 #####################################################################################
 
-# *** *** *** *** *** WEBSOCKET PORT (USALLY 4444) AND PASSWORD (ALSO SET IN THE OBS WEBSOCKET PLUG-IN) *** *** *** *** ***
+# WEBSOCKET PORT (USALLY 4444) AND PASSWORD (ALSO SET IN THE OBS WEBSOCKET PLUG-IN)
 port = 4444
 password = "123456"
 
@@ -40,9 +40,13 @@ password = "123456"
 triggerChar = '+'
 
 # SET THE GPIO PINS
-tallyLightGPIO = 25
-statusLightGPIO = 4
+TallyLightGPIO = 25
+StatusLightGPIO = 4
 
+# SET THE GPIO PIN FOR THE TALLYLIGHT HIGH- OR LOW-ACTIVE
+# 1 = HIGH ACTIVE NORMALLY FOR LEDS - 0 = LOW ACTIVE FOR RELAY BOARD FOR EXAMPLE
+tallylightGPIOLighOrLowActive = 1
+	
 # NUMBER OF SECONDS OF NO PING RESPONSE BEFORE RESETTING
 # MIN. 40 SECONDS
 resetSeconds = 120
@@ -90,9 +94,9 @@ lastCommunicationTime = time.time()
 def delayBlinkLED(count):
     count *= 2
     while count:
-      GPIO.output(statusLightGPIO, GPIO.LOW)
+      GPIO.output(StatusLightGPIO, GPIO.LOW)
       time.sleep(0.25)
-      GPIO.output(statusLightGPIO, GPIO.HIGH)
+      GPIO.output(StatusLightGPIO, GPIO.HIGH)
       time.sleep(0.25)
       count -= 1
 
@@ -103,9 +107,9 @@ def fastBlink(count):
   if time.time() > nextBlink:
     nextBlink = time.time() + 2
     while(count):
-      GPIO.output(statusLightGPIO, GPIO.HIGH)
+      GPIO.output(StatusLightGPIO, GPIO.HIGH)
       time.sleep(0.02)
-      GPIO.output(statusLightGPIO, GPIO.LOW)
+      GPIO.output(StatusLightGPIO, GPIO.LOW)
       if count > 1:
         time.sleep(0.23)
       count -= 1
@@ -261,30 +265,30 @@ def saveGoodIP(addr):
   lastKnownOBSStudioIP = str(addr)
 
 # SETS THE STATUS FOR THE TALLY LIGHT/"ON AIR"/"RECODING"-SIGN FROM THE SCENE NAME
-# RELAY BOARD VERSION - LOW ACTIVE
+# RELAY BOARD VERSION - LOW ACTIVE GPIO
 def setLEDfromSceneName():
   global currentSceneName, LEDstate
   if currentSceneName.find(triggerChar) > -1:
-    GPIO.output(tallyLightGPIO, 1)
-    logging.debug("RELAY ON")
-    print("RELAY ON")
+    GPIO.output(TallyLightGPIO, tallylightGPIOLighOrLowActive)
+    logging.debug("LED ON/RELAY ACTIVE")
+    print("LED ON/RELAY ACTIVE")
     LEDstate = 1
   else:
-    GPIO.output(tallyLightGPIO, 0)
+    GPIO.output(TallyLightGPIO, tallylightGPIOLighOrLowActive)
     logging.debug("RELAY OFF")
     print("RELAY OFF")
     LEDstate = 0
 	
-# LED VERSION - HIGH ACTIVE
+# LED VERSION - HIGH ACTIVE GPIO
 #def setLEDfromSceneName():
 #  global currentSceneName, LEDstate
 #  if currentSceneName.find(triggerChar) > -1:
-#    GPIO.output(tallyLightGPIO, 0)
+#    GPIO.output(TallyLightGPIO, 0)
 #    logging.debug("LED ON")
 #    print("LED ON")
 #    LEDstate = 1
 #  else:
-#    GPIO.output(tallyLightGPIO, 1)
+#    GPIO.output(TallyLightGPIO, 1)
 #    logging.debug("LED OFF")
 #    print("LED OFF")
 #    LEDstate = 0
@@ -295,18 +299,18 @@ def setLEDfromSceneName():
 
 # SETUP THE GPIO PINS
 GPIO.setmode(GPIO.BCM)
-if GPIO.gpio_function(statusLightGPIO) == 0:
-  print('!!! WARNING *** WARNING *** WARNING *** WARNING *** WARNING !!!')
+if GPIO.gpio_function(StatusLightGPIO) == 0:
+  print('*** WARNIN!G *** WARNING! *** WARNING! *** WARNING! *** WARNING! ***')
   print('GPIO pins are ALREADY in USE!')
   print('Please PRESS CTRL-C IMMEDIATELY to STOP the script!')
   time.sleep(1)
-  print('You have 8 seconds to comply!')
-  time.sleep(2)
-  print('Yes... daddy is in the house! ;-)')
-  time.sleep(5)
-GPIO.setup(statusLightGPIO, GPIO.OUT)
-GPIO.output(statusLightGPIO, GPIO.HIGH)
-GPIO.setup(tallyLightGPIO, GPIO.OUT)
+  print('You have 10 seconds to comply!')
+  time.sleep(4)
+  print('...here's Johnny! ;-)')
+  time.sleep(6)
+GPIO.setup(StatusLightGPIO, GPIO.OUT)
+GPIO.output(StatusLightGPIO, GPIO.HIGH)
+GPIO.setup(TallyLightGPIO, GPIO.OUT)
 
 connected = False
 LEDstate = 0
@@ -317,7 +321,8 @@ try:
 # START ATTEMPTING TO FIND AND CONNECT TO OBS STUDIO
 # GET THE IP ADDRESS OBS Studio
         addr = find_open_socket()
-        if addr != "":	#If OBS Studio found
+        if addr != "":	
+#IF OBS STUDIO WAS FOUND
           ws = obsws(addr, port, password)
           ws.register(on_event)
           ws.register(on_switch, events.SwitchScenes)
@@ -328,8 +333,8 @@ try:
             connected = True
             saveGoodIP(addr)
             if todaysDate != str(time.strftime("%Y-%m-%d")):
-              print("WRONG logfile date!! Changing from " + todaysDate + " to " + str(time.strftime("%Y-%m-%d")))
-              logging.debug("WRONG logfile date! Changing from " + todaysDate + " to " + str(time.strftime("%Y-%m-%d")))
+              print("Hey, WRONG logfile date!! Changing from " + todaysDate + " to " + str(time.strftime("%Y-%m-%d")))
+              logging.debug("Hey, WRONG logfile date! Changing from " + todaysDate + " to " + str(time.strftime("%Y-%m-%d")))
               if logFileName != '/home/pi/powerstally.log':
                 todaysDate = str(time.strftime("%Y-%m-%d"))
                 logFileName = '/home/pi/powerstally_'+ todaysDate +'.log'
@@ -343,16 +348,16 @@ try:
         while connected:	
 # BLINK STATUS LED - ONCE FOR CONNECTED, TWICE FOR CONNECTED AND TALLY LIGHT/"ON AIR"/"RECORDING"-SIGN IS ON
                 if lastCommunicationTime + beginPingSeconds < time.time():
-                  logging.debug("Haven't heard from OBS in " + str(time.time()-lastCommunicationTime) + " seconds, Pinging!")
-                  print("Haven't heard from OBS in " + str(time.time()-lastCommunicationTime) + " seconds, Pinging!")   
+                  logging.debug("Haven't heard from OBS Studio in " + str(time.time()-lastCommunicationTime) + " seconds, Pinging!")
+                  print("Haven't heard from OBS Studio in " + str(time.time()-lastCommunicationTime) + " seconds, Pinging!")   
                   if pingHost(addr):
                     requestCurrentSceneName()
                     setLEDfromSceneName()
                   else:
                     time.sleep(2)
                     if lastCommunicationTime + resetSeconds < time.time():
-                      logging.debug("TIMEOUT!!!")
-                      print("TIMEOUT!!!")
+                      logging.debug("*** TIMEOUT! *** TIMEOUT! *** TIMEOUT! ***")
+                      print("*** TIMEOUT! *** TIMEOUT! *** TIMEOUT! ***")
                       resetWiFi()
                       connected = False
                 if lastCommunicationTime + resetSeconds / 2 < time.time():
@@ -364,24 +369,24 @@ try:
 
 # CONNECTION FAILED OR OBS STUDIO NOT FOUND
         try:
-          GPIO.output(tallyLightGPIO, 1)
+          GPIO.output(TallyLightGPIO, tallylightGPIOLighOrLowActive)
           ws.disconnect()
         except:
           pass
-        logging.debug("COULD NOT find OBS Studio! Waiting 2 seconds and re-attempting...")
-        print("COULD NOT find OBS Studio! Waiting 2 seconds and re-attempting...")
+        logging.debug("COULD NOT find OBS Studio! Waiting 2 seconds and try re-attempting...")
+        print("COULD NOT find OBS Studio! Waiting 2 seconds and try re-attempting...")
         time.sleep(2)
 
 # SCRIPT STOPPED BY CTRL-C
 except KeyboardInterrupt: 
-    GPIO.output(tallyLightGPIO, 1)
+    GPIO.output(TallyLightGPIO, tallylightGPIOLighOrLowActive)
     try:
       ws.disconnect()
     except:
       pass
 
 # CLEANUP
-logging.debug("SHUTTING DOWN! - Daddy has left the building...")
-print("SHUTTING DOWN! - Daddy has left the building...")
-GPIO.output(tallyLightGPIO, 1)
+logging.debug("SHUTTING DOWN! - Elvis has left the building... ;-)")
+print("SHUTTING DOWN! - Elivs has left the building... ;-) ")
+GPIO.output(TallyLightGPIO, tallylightGPIOLighOrLowActive)
 GPIO.cleanup()
