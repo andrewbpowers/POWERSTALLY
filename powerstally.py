@@ -94,7 +94,7 @@ try:
 except:
 	logging.debug('COULD NOT LOAD last good IP address from OBS Studio')
 
-# KEEP TRACK OF LAST COMMUNICATION TIME
+# TRACK THE LAST COMMUNICATION TIME
 lastCommunicationTime = time.time()
 
 # 2HZ SLOW BLINKING (INACTIVE STREAM/NOT RECORDING BUT CONNECTED TO OBS STUDIO)
@@ -107,7 +107,7 @@ def delayBlinkLED(count):
       time.sleep(0.25)
       count -= 1
 
-# 4HZ FAST BLINKING (ACTIVE SCENE WITH IN THE NAME)
+# 4HZ FAST BLINKING (ACTIVE SCENE WITH "+" IN THE SCENENAME)
 nextBlink = 0
 def fastBlink(count):
   global nextBlink
@@ -130,7 +130,7 @@ def resetWiFi():
     print("Bringing up WLAN in 5")
     delayBlinkLED(5)
     print("Now!")
-    logging.debug("Bringing up WLAN")
+    logging.debug("Bringing up WLAN!")
     cmd = 'ifconfig wlan0 up'
     os.system(cmd)
     delayBlinkLED(5)
