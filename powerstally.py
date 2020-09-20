@@ -276,8 +276,8 @@ def setLEDfromSceneName():
     LEDstate = 1
   else:
     GPIO.output(TallyLightGPIO, tallylightGPIOLighOrLowActive)
-    logging.debug("RELAY OFF")
-    print("RELAY OFF")
+    logging.debug("LED OFF/RELAY NOT ACTIVE")
+    print("LED OFF/RELAY NOT ACTIVE")
     LEDstate = 0
 
 #####################################################################################
