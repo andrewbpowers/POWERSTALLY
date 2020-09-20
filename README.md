@@ -9,11 +9,16 @@ Please see https://www.andrewbpowers.com/stories/2020/9/11/powerstally
 
 ### Configuration
 
-By default, the script will create a new logfile every day. If you wish to have only one logfile, comment out [line 57](https://github.com/andrewbpowers/POWERSTALLY/blob/master/powerstally.py#L30) and uncomment [line 29](https://github.com/andrewbpowers/POWERSTALLY/blob/master/powerstally.pyL29).
-
-Set the character that triggers the LED in [line 41](https://github.com/andrewbpowers/POWERSTALLY/blob/master/powerstally.pyL41).
-
+Set the port in [line 37](https://github.com/andrewbpowers/POWERSTALLY/blob/master/powerstally.pyL37).
 Set the websocket password in [line 38](https://github.com/andrewbpowers/POWERSTALLY/blob/master/powerstally.pyL38).
+
+Set the character that triggers the light in [line 41](https://github.com/andrewbpowers/POWERSTALLY/blob/master/powerstally.pyL41).
+
+Set the GPIO pins in [line 44] (https://github.com/andrewbpowers/POWERSTALLY/blob/master/powerstally.pyL44) and in [line 45] (https://github.com/andrewbpowers/POWERSTALLY/blob/master/powerstally.pyL45).
+
+Set the value for high active or low aktive LEDs/Relays GPIO in [line 49] (https://github.com/andrewbpowers/POWERSTALLY/blob/master/powerstally.pyL49).
+
+By default, the script will create a new logfile every day. If you wish to have only one logfile, comment out [line 60](https://github.com/andrewbpowers/POWERSTALLY/blob/master/powerstally.py#L60) and uncomment [line 57](https://github.com/andrewbpowers/POWERSTALLY/blob/master/powerstally.pyL57).
 
 ## License
 
