@@ -14,7 +14,7 @@ Set the websocket password in [line 38](https://github.com/andrewbpowers/POWERST
 
 Set the character that triggers the light in [line 41](https://github.com/andrewbpowers/POWERSTALLY/blob/master/powerstally.pyL41).
 
-Set the GPIO pins in [line 44](https://github.com/andrewbpowers/POWERSTALLY/blob/master/powerstally.pyL44) and in [line 45(https://github.com/andrewbpowers/POWERSTALLY/blob/master/powerstally.pyL45).
+Set the GPIO pins in [line 44](https://github.com/andrewbpowers/POWERSTALLY/blob/master/powerstally.pyL44) and in [line 45](https://github.com/andrewbpowers/POWERSTALLY/blob/master/powerstally.pyL45).
 
 Set the value for high active or low aktive LEDs/Relays GPIO in [line 49](https://github.com/andrewbpowers/POWERSTALLY/blob/master/powerstally.pyL49).
 
