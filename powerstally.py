@@ -279,20 +279,6 @@ def setLEDfromSceneName():
     logging.debug("RELAY OFF")
     print("RELAY OFF")
     LEDstate = 0
-	
-# LED VERSION - HIGH ACTIVE GPIO
-#def setLEDfromSceneName():
-#  global currentSceneName, LEDstate
-#  if currentSceneName.find(triggerChar) > -1:
-#    GPIO.output(TallyLightGPIO, 0)
-#    logging.debug("LED ON")
-#    print("LED ON")
-#    LEDstate = 1
-#  else:
-#    GPIO.output(TallyLightGPIO, 1)
-#    logging.debug("LED OFF")
-#    print("LED OFF")
-#    LEDstate = 0
 
 #####################################################################################
 ###################################### MAIN LOOP ####################################
