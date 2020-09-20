@@ -44,9 +44,15 @@ triggerChar = '+'
 TallyLightGPIO = 25
 StatusLightGPIO = 4
 
-# SET THE GPIO PIN FOR THE TALLYLIGHT HIGH- OR LOW-ACTIVE
-# 1 = HIGH ACTIVE NORMALLY FOR LEDS - 0 = LOW ACTIVE FOR RELAY BOARD FOR EXAMPLE
-tallylightGPIOLighOrLowActive = 1
+# SET THE GPIO PIN VALUE FOR THE TALLYLIGHT - HIGH- OR LOW-ACTIVE
+# VALUE FOR OFF
+# 0 = FOR HIGH ACTIVE NORMALLY FOR LEDS
+# 1 = LOW ACTIVE FOR RELAY BOARD FOR EXAMPLE
+TallyLightGPIOHighOrLowActiveOFF = 0
+# VALUE FOR ON
+# 1 = FOR HIGH ACTIVE NORMALLY FOR LEDS
+# 0 = LOW ACTIVE FOR RELAY BOARD FOR EXAMPLE
+TallyLightGPIOHighOrLowActiveON = 1
 	
 # NUMBER OF SECONDS OF NO PING RESPONSE BEFORE RESETTING
 # MIN. 40 SECONDS
@@ -270,12 +276,12 @@ def saveGoodIP(addr):
 def setLEDfromSceneName():
   global currentSceneName, LEDstate
   if currentSceneName.find(triggerChar) > -1:
-    GPIO.output(TallyLightGPIO, tallylightGPIOLighOrLowActive)
+    GPIO.output(TallyLightGPIO, TallyLightGPIOHighOrLowActiveON)
     logging.debug("LED ON/RELAY ACTIVE")
     print("LED ON/RELAY ACTIVE")
     LEDstate = 1
   else:
-    GPIO.output(TallyLightGPIO, tallylightGPIOLighOrLowActive)
+    GPIO.output(TallyLightGPIO, TallyLightGPIOHighOrLowActiveOFF)
     logging.debug("LED OFF/RELAY NOT ACTIVE")
     print("LED OFF/RELAY NOT ACTIVE")
     LEDstate = 0
@@ -356,7 +362,7 @@ try:
 
 # CONNECTION FAILED OR OBS STUDIO NOT FOUND
         try:
-          GPIO.output(TallyLightGPIO, tallylightGPIOLighOrLowActive)
+          GPIO.output(TallyLightGPIO, TallyLightGPIOHighOrLowActiveOFF)
           ws.disconnect()
         except:
           pass
@@ -366,7 +372,7 @@ try:
 
 # SCRIPT STOPPED BY CTRL-C
 except KeyboardInterrupt: 
-    GPIO.output(TallyLightGPIO, tallylightGPIOLighOrLowActive)
+    GPIO.output(TallyLightGPIO, TallyLightGPIOHighOrLowActiveOFF)
     try:
       ws.disconnect()
     except:
@@ -375,5 +381,5 @@ except KeyboardInterrupt:
 # CLEANUP
 logging.debug("SHUTTING DOWN! - Elvis has left the building... ;-)")
 print("SHUTTING DOWN! - Elivs has left the building... ;-) ")
-GPIO.output(TallyLightGPIO, tallylightGPIOLighOrLowActive)
+GPIO.output(TallyLightGPIO, TallyLightGPIOHighOrLowActiveOFF)
 GPIO.cleanup()
