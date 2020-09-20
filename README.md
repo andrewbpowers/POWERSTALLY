@@ -9,11 +9,11 @@ Please see https://www.andrewbpowers.com/stories/2020/9/11/powerstally
 
 ### Configuration
 
-By default, the script will create a new logfile every day.  If you wish to have only one logfile, comment out [line 30](https://github.com/andrewbpowers/POWERSTALLY/commit/5c72dc9978a5adc2fcb7a60d8ba13d016a3fc7dd#L30) and uncomment [line 29](https://github.com/andrewbpowers/POWERSTALLY/commit/5c72dc9978a5adc2fcb7a60d8ba13d016a3fc7dd#L29).
+By default, the script will create a new logfile every day. If you wish to have only one logfile, comment out [line 57](https://github.com/andrewbpowers/POWERSTALLY/blob/master/powerstally.py#L30) and uncomment [line 29](https://github.com/andrewbpowers/POWERSTALLY/blob/master/powerstally.pyL29).
 
-Set the character that triggers the LED in [line 41](https://github.com/andrewbpowers/POWERSTALLY/commit/5c72dc9978a5adc2fcb7a60d8ba13d016a3fc7dd#L41).
+Set the character that triggers the LED in [line 41](https://github.com/andrewbpowers/POWERSTALLY/blob/master/powerstally.pyL41).
 
-Set the websocket password in [line 49](https://github.com/andrewbpowers/POWERSTALLY/commit/5c72dc9978a5adc2fcb7a60d8ba13d016a3fc7ddL49).
+Set the websocket password in [line 38](https://github.com/andrewbpowers/POWERSTALLY/blob/master/powerstally.pyL38).
 
 ## License
 
