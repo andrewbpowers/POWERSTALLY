@@ -14,7 +14,7 @@
 #    Alpha version for public - Use at your own risk :-)
 # 1.0	2020-04-02
 #    This version can be use for LED Tally Light or a high voltage Tally Light via relay board. Use what you like and prefer. 
-#    Change the "tallylightGPIOLighOrLowActive" value.
+#    Change the "TallyLightGPIOHighOrLowActiveOFF" and "TallyLightGPIOHighOrLowActiveOFF" value.
 
 import sys
 import time
