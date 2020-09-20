@@ -16,9 +16,9 @@ Set the character that triggers the light in [line 41](https://github.com/andrew
 
 Set the GPIO pins in [line 44](https://github.com/andrewbpowers/POWERSTALLY/blob/master/powerstally.py#L44) and in [line 45](https://github.com/andrewbpowers/POWERSTALLY/blob/master/powerstally.py#L45).
 
-Set the value for high active or low aktive LEDs/Relays GPIO in [line 49](https://github.com/andrewbpowers/POWERSTALLY/blob/master/powerstally.py#L49).
+Set the GPIO pin value for high active or low active LEDs/Relays in [line 51](https://github.com/andrewbpowers/POWERSTALLY/blob/master/powerstally.py#L51) for the OFF value and in [line 55](https://github.com/andrewbpowers/POWERSTALLY/blob/master/powerstally.py#L55) for the ON value.
 
-By default, the script will create a new logfile every day. If you wish to have only one logfile, comment out [line 60](https://github.com/andrewbpowers/POWERSTALLY/blob/master/powerstally.py#L60) and uncomment [line 57](https://github.com/andrewbpowers/POWERSTALLY/blob/master/powerstally.py#L57).
+By default, the script will create a new logfile every day. If you wish to have only one logfile, comment out [line 66](https://github.com/andrewbpowers/POWERSTALLY/blob/master/powerstally.py#L66) and uncomment [line 63](https://github.com/andrewbpowers/POWERSTALLY/blob/master/powerstally.py#L63).
 
 ## License
 
