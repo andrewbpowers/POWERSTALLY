@@ -5,7 +5,7 @@ by Andrew B. Powers (www.andrewbpowers.com // https://github.com/andrewbpowers/P
 
 ### Hardware & Setup
 
-Please see https://www.andrewbpowers.com/stories/2020/6/26/studio-rack-powersrack
+Please see https://www.andrewbpowers.com/stories/2020/9/11/powerstally
 
 ### Configuration
 
