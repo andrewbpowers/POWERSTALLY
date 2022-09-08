@@ -20,10 +20,11 @@ Set the GPIO pin value for high active or low active LEDs/Relays in [line 51](ht
 
 By default, the script will create a new logfile every day. If you wish to have only one logfile, comment out [line 66](https://github.com/andrewbpowers/POWERSTALLY/blob/master/powerstally.py#L66) and uncomment [line 63](https://github.com/andrewbpowers/POWERSTALLY/blob/master/powerstally.py#L63).
 
-## ☕ If you like my work or the free stuff
-...and want to say thank you, please use this opportunity now and…
+## ☕ If you like my work or the free stuff...
+...and want to say thank you, please use this opportunity now and
 
 <a href="https://www.buymeacoffee.com/andrewbpowers" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Buy Me A Coffee" style="height: 60px !important;width: 217px !important;" ></a>
+
 THANK YOU, very much! 🙏🏻
 
 ## License
