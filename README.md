@@ -39,7 +39,8 @@ Software is licensed under a [GNU GPL v3 License](https://www.gnu.org/licenses/g
 
 If your device connects to mains electricity (AC power) there is danger of electrocution if not installed properly. If you don't know how to install it, please call an electrician (***Beware:*** certain countries prohibit installation without a licensed electrician present).
 
-Remember: _**SAFETY FIRST**_!
+Remember: _**SAFETY FIRST!**_
+
 It is not worth the risk to yourself, your family and your home if you don't know exactly what you are doing. 
 Never tinker or try to flash a device using the serial programming interface while it is connected to MAINS ELECTRICITY (AC power).
 
