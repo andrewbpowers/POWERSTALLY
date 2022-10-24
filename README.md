@@ -25,7 +25,7 @@ By default, the script will create a new logfile every day. If you wish to have 
 
 <a href='https://ko-fi.com/K3K0F1DUA' target='_blank'><center><img height='36' style='border:0px;height:36px;' src='https://cdn.ko-fi.com/cdn/kofi1.png?v=3' border='0' alt='Buy Me a Coffee at ko-fi.com' /></center></a>
 
-THANK YOU, very much! 🙏🏻
+_**THANK YOU**_, very much! 🙏🏻
 
 ## License
 
